@@ -3,7 +3,6 @@ import { Icon } from '@iconify/react';
 import carOutlined from '@iconify/icons-ant-design/car-outlined';
 import Geocode from "react-geocode";
 import Map from './components/Map';
-import socketIOClient from 'socket.io-client';
 
 import './App.css';
 
@@ -21,12 +20,15 @@ class App extends React.Component {
       currentLocationLongitude: 'none',
       destination: 'none',
       destinationLatitude: 'none',
-      destinationLongitude: 'none'
+      destinationLongitude: 'none',
+      numberSubmitted : false,
+      number : 'none'
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCurrentLocation = this.handleCurrentLocation.bind(this);
     this.renderMapInfo = this.renderMapInfo.bind(this);
+    this.parkingSpots = this.parkingSpots.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -42,6 +44,18 @@ class App extends React.Component {
     })
   };
 
+  textSubmit = formSubmitEvent => {
+    formSubmitEvent.preventDefault();
+
+    this.setState({
+      numberSubmitted: true,
+    })
+
+    if(this.state.numberSubmitted === true) {
+        //sends text "welcome to Twilio!"
+    }
+  }
+
   handleCurrentLocation = (e) => {
     this.setState({startingPoint: true, currentLocation: e.target.value});
   }
@@ -52,6 +66,11 @@ class App extends React.Component {
   }
 
   handleDestinationInput = (e) => {
+    this.setState({currentLocation: e.target.value});
+    console.log(e.target.value);
+  }
+
+  handleNumberInput = (e) => {
     this.setState({currentLocation: e.target.value});
     console.log(e.target.value);
   }
@@ -67,8 +86,41 @@ class App extends React.Component {
         <div className="parking">
           <div className="directions">
               <h2 className="subtitle">parking</h2>
+              {this.parkingSpots()}
+
+              <form onSubmit={this.textSubmit}>
+                <input 
+                  type="text" 
+                  placeholder="text me the open spots!" 
+                  className="text-input"
+                  id="destination-input"
+                  onChange={(e) => this.handleNumberInput(e)}
+                  />
+                <button 
+                  className="submit-button-small" 
+                  type="submit"
+                  >
+                    let's go!
+                  </button>
+              </form>
           </div>
         </div>
+      </div>
+    )
+  }
+
+  parkingSpots = () => {
+    return (
+      <div>
+        <div>WV82 is available</div>
+        <div>CC782 is available</div>
+        <div>SV96 is available</div>
+        <div>CT260 is available</div>
+        <div>CT369A is available</div>
+        <div>CT115 is available</div>
+        <div>LT297 is available</div>
+        <div>ED783 is available</div>
+        <div>SV96 is available</div>
       </div>
     )
   }
@@ -156,7 +208,7 @@ class App extends React.Component {
           </h1>
 
           <h2 className="subtitle">
-            subtitle subtitle subtitle subtitle subtitle
+            saving you the trouble of parking today!
           </h2>
 
           <form 
