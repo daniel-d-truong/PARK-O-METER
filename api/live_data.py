@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
 import pandas as pd
 from sodapy import Socrata
 import csv
@@ -32,7 +32,7 @@ def load_parking_meters():
                 "parkingPolicy": row[6],
                 "streetParking": row[7],
                 "latLng": row[8],
-                "occupied": parking_occupancy[space_id] if space_id in parking_occupancy else False
+                "occupied": parking_occupancy[space_id]['occupied'] if space_id in parking_occupancy else False
             }
             parking_meters[space_id] = meter_info
 
@@ -54,7 +54,7 @@ def get_live_data():
     for index, row in results_df.iterrows():
         space_id = row['spaceid']
 
-        if space_id not in parking_meters: continue
+        if space_id in parking_meters: continue
 
         occupied_str = row['occupancystate']
         parking_occupancy[space_id] = {
@@ -63,7 +63,6 @@ def get_live_data():
 
 @live_data.route('/', methods=['GET'])
 def get():
-    return "hello data"
+    return parking_meters
 
 load_parking_meters()
-print(parking_meters)
