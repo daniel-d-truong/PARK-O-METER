@@ -52,7 +52,7 @@ class App extends React.Component {
     })
 
     if(this.state.numberSubmitted === true) {
-        //sends text "welcome to Twilio!"
+        console.log("welcome to Twilio!");
     }
   }
 
@@ -204,7 +204,7 @@ class App extends React.Component {
           <div className="line3"></div>
 
           <h1 className="title">
-            TITLE TITLE TITLE TITLE
+            parkometer
           </h1>
 
           <h2 className="subtitle">
