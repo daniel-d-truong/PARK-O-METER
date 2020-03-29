@@ -76,7 +76,7 @@ def update_occupancy():
                 free_parking_locations.pop(loc)
         parking_meters[space]['occupied'] = parking_occupancy[space]['occupied']
     # with app.test_request_context('/'):
-    emit("update parking", { 'changes': changed_spaces })
+    # emit("update parking", { 'changes': changed_spaces })
 
 def get_live_data(limit=2000):
     # First 2000 results, returned as JSON from API / converted to Python list of

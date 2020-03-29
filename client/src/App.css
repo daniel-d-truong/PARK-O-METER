@@ -164,6 +164,9 @@
   border-radius: 7%;
   padding: 2.5%;
   border: 1px solid #2F4937;
+  font-size: calc(15px + (20 - 15) * ((100vw - 20px) / (1600 - 300)));
+  color: black;
+  
 }
 
 .parking {

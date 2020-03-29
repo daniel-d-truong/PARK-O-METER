@@ -81,6 +81,13 @@ class App extends React.Component {
         <br /><br />
         <div className="actualMap">
           <Map />
+          <h2 className="subtitle">Directions</h2>
+          <div>1) Turn right at the light to merge onto I-5</div>
+          <div>2) Take exit 85A for CA-73 N toward Long Beach</div>
+          <div>3) Continue onto CA-73 N Toll road</div>
+          <div>4) Take exit 18A on the left to merge onto I-405 N toward Long Beach</div>
+          <div>5) You're here at your destination! </div>
+
         </div>
 
         <div className="parking">

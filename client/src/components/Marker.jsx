@@ -37,7 +37,7 @@ const markerTypes = {
     "red": "https://res.cloudinary.com/og-tech/image/upload/s--OpSJXuvZ--/v1545236805/map-marker_hfipes.png",
     "taken": "https://cdn0.iconfinder.com/data/icons/map-markers-2-1/512/xxx002-512.png",
     "free": "https://www.pngfind.com/pngs/m/87-878259_select-facultats-i-escoles-google-map-marker-green.png"
-}
+};
 
 class Marker extends React.Component {
     constructor(props) {
@@ -55,8 +55,6 @@ class Marker extends React.Component {
             </div>
         )
     }
-
-
-}
+};
 
 export default Marker;
