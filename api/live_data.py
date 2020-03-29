@@ -3,7 +3,6 @@ import pandas as pd
 from sodapy import Socrata
 import csv
 from datetime import date
-import config
 
 # Flow: Get each parking meter & location --> Get occupancy state
 
