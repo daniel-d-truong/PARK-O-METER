@@ -98,7 +98,7 @@
   outline: 0;
 }
 
-.input-current-location:disabled {
+.location-input:disabled {
   background-color: #B1C7B8;
 }
 
