@@ -1,4 +1,8 @@
 import React from 'react';
+import { Icon } from '@iconify/react';
+import carOutlined from '@iconify/icons-ant-design/car-outlined';
+import { geolocated } from "react-geolocated";
+
 import './App.css'
 
 class App extends React.Component {
@@ -7,7 +11,8 @@ class App extends React.Component {
     this.state = {
       isSubmitted : false,
       startingPoint : false,
-      currentLocation: 'none',
+      currentLocationLatitude: 'none',
+      currentLocationLongitude: 'none',
       destination: 'none'
     };
 
@@ -18,7 +23,7 @@ class App extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleStartingInput = this.handleStartingInput.bind(this);
-    this.handleDestinationInput = this.handleDestinationInput.bind(this);
+    this.testThis = this.testThis.bind(this);
   }
 
   handleSubmit = formSubmitEvent => {
@@ -54,6 +59,23 @@ class App extends React.Component {
         </div>
       </div>
     )
+  }
+
+  testThis = () => {
+    if(!this.props.isGeolocationAvailable) {
+      alert("Your browser does not support Geolocation");
+      this.setState({startingPoint: false});
+    }
+    else if(!this.props.isGeolocationEnabled) {
+      alert("Geolocation is not enabled");
+      this.setState({startingPoint: false});
+    }
+    else {
+      this.setState({
+        currentLocationLatitude: this.props.coords.latitude,
+        currentLocationLongitude: this.props.coords.longitude
+      })
+    }
   }
 
   componentDidMount = () => this.handleClick()
@@ -111,7 +133,8 @@ class App extends React.Component {
               type="button"
               onClick={e => this.handleCurrentLocation(e)}
               >
-              {(this.state.startingPoint)? "using your location!" : "use current location"}
+              {(this.state.startingPoint) ? "using your location!" : "use current location"}
+              {(this.state.startingPoint) ? this.testThis() : null}
             </button>
             <br />
             <input 
@@ -126,6 +149,7 @@ class App extends React.Component {
             type="submit"
             onClick={this.handleMap}
             >
+              <Icon icon={carOutlined} /> <br />
                let's go!
             </button>
 
