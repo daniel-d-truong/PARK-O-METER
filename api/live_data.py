@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
+from flask_socketio import send, emit
 import pandas as pd
 from sodapy import Socrata
 import csv
 from datetime import date
 import time
 import atexit
+# import socketio
 from apscheduler.schedulers.background import BackgroundScheduler
 
 # Flow: Get each parking meter & location --> Get occupancy state
@@ -18,7 +20,6 @@ parking_occupancy = {}
 parking_meters = {}
 parking_locations = {}
 free_parking_locations = {}
-
 
 # Initial load in
 def load_parking_meters():
@@ -58,6 +59,7 @@ def load_parking_meters():
 
 def update_occupancy():
     get_live_data(200)
+    changed_spaces = []
     for space in parking_occupancy:
         if space not in parking_meters: continue
 
@@ -66,11 +68,15 @@ def update_occupancy():
             # if the spot is now free, add to the free_parking_loc
             loc = parking_meters[space]["location"]
 
+            changed_spaces.append((space, parking_occupancy[space]))
+
             if not parking_occupancy[space]['occupied']:
                 free_parking_locations[loc] = space
             else:
                 free_parking_locations.pop(loc)
         parking_meters[space]['occupied'] = parking_occupancy[space]['occupied']
+    # with app.test_request_context('/'):
+    emit("update parking", { 'changes': changed_spaces })
 
 def get_live_data(limit=2000):
     # First 2000 results, returned as JSON from API / converted to Python list of
