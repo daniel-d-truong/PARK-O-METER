@@ -2,6 +2,8 @@ import React from 'react';
 import { Icon } from '@iconify/react';
 import carOutlined from '@iconify/icons-ant-design/car-outlined';
 import Geocode from "react-geocode";
+import Map from './components/Map';
+import socketIOClient from 'socket.io-client';
 
 import './App.css';
 
@@ -59,6 +61,7 @@ class App extends React.Component {
       <div className="mapSection">
         <br /><br />
         <div className="actualMap">
+          <Map />
         </div>
 
         <div className="parking">
