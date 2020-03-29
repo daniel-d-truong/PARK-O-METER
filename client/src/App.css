@@ -20,6 +20,7 @@
   color: #3F3633;
   margin-bottom: 2%;
   border: 0.2px solid #43C18F;
+  margin-top: -40%;
 }
 
 .subtitle {
@@ -173,4 +174,28 @@
   margin-left: 110vh;
   margin-top: -78.5vh;
   color: #282220;
+}
+
+.line1 {
+  width: 25%;
+  border-bottom: 1em solid #FFE58C;
+  margin-right: 85%;
+  transform: rotate(-35deg);
+  margin-top: 5%;
+}
+
+.line2 {
+  width: 25%;
+  border-bottom: 1em solid #FFE58C;
+  margin-right: 85%;
+  margin-top: 17%;
+  transform: rotate(-35deg);
+}
+
+.line3 {
+  width: 25%;
+  border-bottom: 1em solid #FFE58C;
+  margin-right: 85%;
+  margin-top: 17%;
+  transform: rotate(-35deg);
 }

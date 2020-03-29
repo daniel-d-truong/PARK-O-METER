@@ -1,9 +1,12 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
 import carOutlined from '@iconify/icons-ant-design/car-outlined';
-import { geolocated } from "react-geolocated";
+import Geocode from "react-geocode";
 
-import './App.css'
+import './App.css';
+
+Geocode.setApiKey("AIzaSyBRZCHZ1k9f213BDHCoJFa2GD4VeGa4IbY");
+Geocode.setLanguage("en");
 
 class App extends React.Component {
   constructor(props) {
@@ -11,9 +14,12 @@ class App extends React.Component {
     this.state = {
       isSubmitted : false,
       startingPoint : false,
+      currentLocation: 'none',
       currentLocationLatitude: 'none',
       currentLocationLongitude: 'none',
-      destination: 'none'
+      destination: 'none',
+      destinationLatitude: 'none',
+      destinationLongitude: 'none'
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,7 +29,7 @@ class App extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleStartingInput = this.handleStartingInput.bind(this);
-    this.testThis = this.testThis.bind(this);
+    this.geolocation = this.geolocation.bind(this);
   }
 
   handleSubmit = formSubmitEvent => {
@@ -61,7 +67,7 @@ class App extends React.Component {
     )
   }
 
-  testThis = () => {
+  geolocation = () => {
     if(!this.props.isGeolocationAvailable) {
       alert("Your browser does not support Geolocation");
       this.setState({startingPoint: false});
@@ -77,7 +83,6 @@ class App extends React.Component {
       })
     }
   }
-
   componentDidMount = () => this.handleClick()
 
   componentDidUpdate = () => this.handleClick()
@@ -92,6 +97,41 @@ class App extends React.Component {
   }
 
   handleMap = () => {
+    var address;
+    address  = this.state.destination;
+
+    Geocode.fromAddress(address).then(
+      response => {
+        const { lat, lng } = response.results[0].geometry.location;
+
+        this.setState({
+          destinationLatitude: lat,
+          destinationLongitude: lng
+        });
+      },
+      error => {
+        console.error(error);
+      }
+    );
+
+    if((this.state.currentLocation).localeCompare('none') !== 0) {
+      address = this.state.currentLocation;
+
+      Geocode.fromAddress(address).then(
+        response => {
+          const { lat, lng } = response.results[0].geometry.location;
+  
+          this.setState({
+            currentLocationLatitude: lat,
+            currentLocationLongitude: lng
+          });
+        },
+        error => {
+          console.error(error);
+        }
+      );
+    }
+  
       const form = {
         current: this.state.currentLocation,
         dest: this.state.destination
@@ -107,6 +147,10 @@ class App extends React.Component {
           @import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
         </style>
         <div className="titleSection">
+
+          <div className="line1"></div>
+          <div className="line2"></div>
+          <div className="line3"></div>
 
           <h1 className="title">
             TITLE TITLE TITLE TITLE
@@ -134,7 +178,7 @@ class App extends React.Component {
               onClick={e => this.handleCurrentLocation(e)}
               >
               {(this.state.startingPoint) ? "using your location!" : "use current location"}
-              {(this.state.startingPoint) ? this.testThis() : null}
+              {(this.state.startingPoint) ? this.geolocation() : null}
             </button>
             <br />
             <input 
