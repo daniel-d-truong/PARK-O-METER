@@ -1,7 +1,7 @@
-const serverUrl = "http://127.0.0.1:5000/"
+export const serverUrl = "http://127.0.0.1:5000/"
 
-const getParkingSpots = () => {
+export const getParkingSpots = (marker_data) => {
     fetch(serverUrl + "data").then((response) => response.json()).then((data) => {
-        console.log(data);
+        marker_data["data"] = data;
     });
 };
