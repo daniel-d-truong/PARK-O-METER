@@ -2,12 +2,39 @@ import React from 'react';
 import './App.css'
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isSubmitted : false,
+    };
+  }
 
   handleSubmit = formSubmitEvent => {
     formSubmitEvent.preventDefault();
 
-    alert("TESTING: submitted!");
+    this.setState({isSubmitted: true});
   };
+
+  renderMapInfo = () => {
+    return (
+      <div className="mapSection">
+        testing
+      </div>
+    )
+  }
+
+  componentDidMount = () => this.handleScroll()
+
+  componentDidUpdate = () => this.handleScroll()
+
+  handleScroll = () => {
+    const { index, selected } = this.props
+    if (index === selected) {
+      setTimeout(() => {
+        this.refs.map.scrollIntoView({ behavior: 'smooth' })
+      })
+    }
+  }
 
   render() {
     return (
@@ -43,19 +70,18 @@ class App extends React.Component {
 
           <button 
             className="submit-button" 
-            type="submit">
+            type="submit"
+            onClick={this.handleClick}>
                let's go!
             </button>
 
           </form>
-
-
         </div>
-        <div className="mapSection">
-          MAP
-        </div>
+
+        {this.state.isSubmitted ? this.renderMapInfo(): null}
+        <div ref="map" />
         <footer className="footer">
-          hello
+          
         </footer>
       </div>
     );
