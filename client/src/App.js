@@ -62,6 +62,9 @@ class App extends React.Component {
         </div>
 
         <div className="parking">
+          <div className="directions">
+              <h2 className="subtitle">parking</h2>
+          </div>
         </div>
       </div>
     )
@@ -131,13 +134,6 @@ class App extends React.Component {
         }
       );
     }
-  
-      const form = {
-        current: this.state.currentLocation,
-        dest: this.state.destination
-      };
-
-      // database.push(form);
   }
 
   render() {
