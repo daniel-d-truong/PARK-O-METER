@@ -3,6 +3,9 @@ import pandas as pd
 from sodapy import Socrata
 import csv
 from datetime import date
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Flow: Get each parking meter & location --> Get occupancy state
 
@@ -17,6 +20,7 @@ parking_meters = {}
 # Initial load in
 def load_parking_meters():
     get_live_data()
+
     with open("../data/parking_meters.csv", "r") as f:
         f = csv.reader(f, delimiter=',')
         next(f) #skips header
@@ -36,12 +40,23 @@ def load_parking_meters():
             }
             parking_meters[space_id] = meter_info
 
+    print("loaded data nice")
+
 
 #TODO: Make function that acts as a handler to always get live data.
+def update_occupancy():
+    get_live_data()
+    for space in parking_occupancy:
+        if space not in parking_meters: continue
+
+        if parking_meters[space]['occupied'] != parking_occupancy[space]['occupied']:
+            print("{} has changed to {}".format(space, parking_occupancy[space]['occupied']))
+        parking_meters[space]['occupied'] = parking_occupancy[space]['occupied']
 
 def get_live_data():
     # First 2000 results, returned as JSON from API / converted to Python list of
     # dictionaries by sodapy.
+    parking_meters = {}
     results = client.get("e7h6-4a3e", limit=2000)
 
     # Convert to pandas DataFrame & filter/order data
@@ -52,7 +67,7 @@ def get_live_data():
     
     # Store information in dict
     for index, row in results_df.iterrows():
-        space_id = row['spaceid']
+        space_id = str(row['spaceid'])
 
         if space_id in parking_meters: continue
 
@@ -63,6 +78,20 @@ def get_live_data():
 
 @live_data.route('/', methods=['GET'])
 def get():
-    return parking_meters
+    occupied_dict = { key:value for (key,value) in parking_meters.items() if value["occupied"] }
+    unoccupied_dict = { key:value for (key,value) in parking_meters.items() if !value["occupied"] }
+
+    return {
+        "occupied": occupied_dict,
+        "unoccupied": unoccupied_dict
+    }
 
 load_parking_meters()
+
+# print(parking_meters)
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=update_occupancy, trigger="interval", seconds=10)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
