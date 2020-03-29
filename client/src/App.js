@@ -6,6 +6,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       isSubmitted : false,
+      startingPoint : false,
     };
   }
 
@@ -15,19 +16,28 @@ class App extends React.Component {
     this.setState({isSubmitted: true});
   };
 
+  handleCurrentLocation = () => {
+    this.setState({startingPoint: true});
+  }
+
   renderMapInfo = () => {
     return (
       <div className="mapSection">
-        testing
+        <br /><br />
+        <div className="actualMap">
+        </div>
+
+        <div className="parking">
+        </div>
       </div>
     )
   }
 
-  componentDidMount = () => this.handleScroll()
+  componentDidMount = () => this.handleClick()
 
-  componentDidUpdate = () => this.handleScroll()
+  componentDidUpdate = () => this.handleClick()
 
-  handleScroll = () => {
+  handleClick= () => {
     const { index, selected } = this.props
     if (index === selected) {
       setTimeout(() => {
@@ -55,12 +65,20 @@ class App extends React.Component {
           <form 
             onSubmit={this.handleSubmit} 
             className="form">
-
+  
             <input 
               type="text" 
               placeholder="starting point" 
               className="location-input"
-              id="start-input"/>
+              id="start-input"
+              disabled={(this.state.startingPoint)? "disabled" : ""}/>
+            <button
+              className="input-current-location"
+              type="button"
+              onClick={this.handleCurrentLocation}
+              >
+              {(this.state.startingPoint)? "using your location!" : "use current location"}
+            </button>
             <br />
             <input 
               type="text" 
