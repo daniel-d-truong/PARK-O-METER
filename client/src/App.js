@@ -7,17 +7,40 @@ class App extends React.Component {
     this.state = {
       isSubmitted : false,
       startingPoint : false,
+      currentLocation: 'none',
+      destination: 'none'
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleCurrentLocation = this.handleCurrentLocation.bind(this);
+    this.renderMapInfo = this.renderMapInfo.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleStartingInput = this.handleStartingInput.bind(this);
+    this.handleDestinationInput = this.handleDestinationInput.bind(this);
   }
 
   handleSubmit = formSubmitEvent => {
     formSubmitEvent.preventDefault();
 
-    this.setState({isSubmitted: true});
+    this.setState({
+      isSubmitted: true,
+    })
   };
 
-  handleCurrentLocation = () => {
-    this.setState({startingPoint: true});
+  handleCurrentLocation = (e) => {
+    this.setState({startingPoint: true, currentLocation: e.target.value});
+  }
+
+  handleStartingInput = (e) => {
+    this.setState({currentLocation: e.target.value});
+    console.log(e.target.value);
+  }
+
+  handleDestinationInput = (e) => {
+    this.setState({currentLocation: e.target.value});
+    console.log(e.target.value);
   }
 
   renderMapInfo = () => {
@@ -37,13 +60,22 @@ class App extends React.Component {
 
   componentDidUpdate = () => this.handleClick()
 
-  handleClick= () => {
+  handleClick = () => {
     const { index, selected } = this.props
     if (index === selected) {
       setTimeout(() => {
         this.refs.map.scrollIntoView({ behavior: 'smooth' })
       })
     }
+  }
+
+  handleMap = () => {
+      const form = {
+        current: this.state.currentLocation,
+        dest: this.state.destination
+      };
+
+      // database.push(form);
   }
 
   render() {
@@ -71,11 +103,13 @@ class App extends React.Component {
               placeholder="starting point" 
               className="location-input"
               id="start-input"
-              disabled={(this.state.startingPoint)? "disabled" : ""}/>
+              disabled={(this.state.startingPoint)? "disabled" : ""}
+              onChange={(e) => this.handleStartingInput(e)}
+            />
             <button
               className="input-current-location"
               type="button"
-              onClick={this.handleCurrentLocation}
+              onClick={e => this.handleCurrentLocation(e)}
               >
               {(this.state.startingPoint)? "using your location!" : "use current location"}
             </button>
@@ -84,12 +118,14 @@ class App extends React.Component {
               type="text" 
               placeholder="destination" 
               className="location-input"
-              id="destination-input"/>
-
+              id="destination-input"
+              onChange={(e) => this.handleDestinationInput(e)}
+              />
           <button 
             className="submit-button" 
             type="submit"
-            onClick={this.handleClick}>
+            onClick={this.handleMap}
+            >
                let's go!
             </button>
 
