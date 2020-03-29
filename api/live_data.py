@@ -6,7 +6,6 @@ from datetime import date
 import time
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from math import cos, asin, sqrt
 
 # Flow: Get each parking meter & location --> Get occupancy state
 
@@ -18,14 +17,8 @@ today = str(date.today())
 parking_occupancy = {}
 parking_meters = {}
 parking_locations = {}
+free_parking_locations = {}
 
-def distance(lat1, lon1, lat2, lon2):
-    p = 0.017453292519943295
-    a = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p)*cos(lat2*p) * (1-cos((lon2-lon1)*p)) / 2
-    return 12742 * asin(sqrt(a))
-
-def closest(v):
-    return min(parking_locations, key=lambda p: distance(float(v[0]), float(v[1]), p[0], p[1]))
 
 # Initial load in
 def load_parking_meters():
@@ -55,6 +48,9 @@ def load_parking_meters():
 
             # store in locatnois dict
             parking_locations[loc] = space_id
+
+            if not meter_info["occupied"]:
+                free_parking_locations[loc] = space_id
             # print meter_info
 
     print("loaded data nice")
@@ -67,6 +63,13 @@ def update_occupancy():
 
         if parking_meters[space]['occupied'] != parking_occupancy[space]['occupied']:
             print("{} has changed to {}".format(space, parking_occupancy[space]['occupied']))
+            # if the spot is now free, add to the free_parking_loc
+            loc = parking_meters[space]["location"]
+
+            if not parking_occupancy[space]['occupied']:
+                free_parking_locations[loc] = space
+            else:
+                free_parking_locations.pop(loc)
         parking_meters[space]['occupied'] = parking_occupancy[space]['occupied']
 
 def get_live_data(limit=2000):
@@ -100,14 +103,6 @@ def get():
     return {
         "occupied": occupied_dict,
         "unoccupied": unoccupied_dict
-    }
-
-@live_data.route('/closest/<lat>/<long>', methods=['GET'])
-def getClosestSpot(lat, long):
-    closest_loc = closest((lat, long))
-    return {
-        "lat": closest_loc[0],
-        "long": closest_loc[1]
     }
 
 load_parking_meters()
